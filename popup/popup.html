@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="popup.css">
+    <title>Subtitle Overlay</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+            min-width: 340px;
+        }
+        
+        .container {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffde59;
+            padding-bottom: 15px;
+        }
+        
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+        }
+        
+        h1 {
+            color: #82bbb5;
+            margin: 0;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        #subtitleFile {
+            display: none;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+            border: 2px dashed #82bbb5;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover {
+            background-color: #e8f4f3;
+            border-color: #6aa9a3;
+        }
+        
+        .upload-icon {
+            fill: #82bbb5;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover .upload-icon {
+            fill: #6aa9a3;
+            transform: translateY(-2px);
+        }
+        
+        .file-name {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #555;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        #encodingSelector {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #82bbb5;
+            border-radius: 6px;
+            background-color: white;
+            font-size: 14px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        #encodingSelector:focus {
+            border-color: #ffde59;
+            box-shadow: 0 0 0 2px rgba(255, 222, 89, 0.2);
+        }
+        
+        #loadSubtitle {
+            width: 100%;
+            padding: 12px;
+            background-color: #82bbb5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #loadSubtitle:hover {
+            background-color: #6aa9a3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        #loadSubtitle:active {
+            transform: translateY(0);
+        }
+        
+        .button-icon {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        #statusMessage {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .status-success {
+            background-color: rgba(130, 187, 181, 0.15);
+            border-left: 4px solid #82bbb5;
+            color: #3a5d59;
+        }
+        
+        .status-error {
+            background-color: rgba(255, 76, 76, 0.15);
+            border-left: 4px solid #ff4c4c;
+            color: #7a2222;
+        }
+        
+        .status-info {
+            background-color: rgba(255, 222, 89, 0.15);
+            border-left: 4px solid #ffde59;
+            color: #7a6822;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Replace with your custom icon -->
+            <img src="../icons/icon128.png" alt="Subtitle Overlay" class="app-icon">
+            <h1>Subtitle Overlay</h1>
+        </div>
+        
+        <div class="file-upload-wrapper">
+            <label for="subtitleFile" class="file-upload-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" class="upload-icon">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                <div>Choose a subtitle file</div>
+                <div style="color: #82bbb5; font-size: 11px; margin-top: 4px;">(.srt, .vtt, .smi supported)</div>
+                <div class="file-name" id="fileName">No file selected</div>
+            </label>
+            <input type="file" id="subtitleFile" accept=".srt,.vtt,.smi">
+        </div>
+        
+        <label for="encodingSelector">Character Encoding:</label>
+        <select id="encodingSelector">
+            <option value="auto">Auto-detect</option>
+            <option value="UTF-8">UTF-8</option>
+            <option value="EUC-KR">EUC-KR (Korean)</option>
+            <option value="CP949">CP949 (Korean)</option>
+            <option value="Shift_JIS">Shift-JIS (Japanese)</option>
+            <option value="GB18030">GB18030 (Chinese)</option>
+            <option value="windows-1252">Windows-1252 (Western)</option>
+        </select>
+        
+        <button id="loadSubtitle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="button-icon">
+                <path fill="white" d="M8 5v14l11-7z"/>
+            </svg>
+            Load Subtitle
+        </button>
+        
+        <div id="statusMessage"></div>
+        
+        <div class="footer">
+            <div>Subtitle Overlay Extension v1.0</div>
+            <div style="margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                <svg height="12" width="12" style="margin-right: 4px;">
+                    <circle cx="6" cy="6" r="5" fill="#82bbb5"/>
+                </svg>
+                <span>Online and ready</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

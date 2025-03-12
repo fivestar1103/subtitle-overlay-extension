@@ -1,0 +1,14 @@
+.subtitle-overlay-extension {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 9999;
+    pointer-events: none; /* Prevent interaction with the overlay */
+}
