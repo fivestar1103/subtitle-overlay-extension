@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadButtonClickHandler = function() {
         const file = subtitleFileInput.files[0];
         if (!file) {
-            updateStatus('Please select a subtitle file.', 'error');
+            updateStatus('Please select a file first', 'error');
             return;
         }
 
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateStatus('Error: ' + chrome.runtime.lastError.message, 'error');
                         console.error('Error sending subtitles:', chrome.runtime.lastError);
                     } else if (response && response.success) {
-                        updateStatus('Subtitles loaded successfully!', 'success');
+                        updateStatus('Subtitles loaded successfully', 'success');
                         
                         // Transform the load button to a close button
                         loadButton.innerHTML = `
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Show keyboard shortcuts info
                         showKeyboardShortcutsInfo();
                     } else {
-                        updateStatus('Failed to load subtitles.', 'error');
+                        updateStatus('Failed to load subtitles', 'error');
                     }
                 });
             });
@@ -196,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to show keyboard shortcuts info
     function showKeyboardShortcutsInfo() {
-        // Create keyboard shortcuts info section
         const shortcutsDiv = document.createElement('div');
         shortcutsDiv.className = 'keyboard-shortcuts';
         shortcutsDiv.style.cssText = `
@@ -211,15 +210,23 @@ document.addEventListener('DOMContentLoaded', function() {
             <table style="width: 100%; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid rgba(130, 187, 181, 0.2);">
                     <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">+/-</td>
-                    <td style="padding: 6px 4px; font-size: 13px;">Increase/decrease font size</td>
+                    <td style="padding: 6px 4px; font-size: 13px;">Font Size Control</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(130, 187, 181, 0.2);">
                     <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">&lt;/&gt;</td>
-                    <td style="padding: 6px 4px; font-size: 13px;">Adjust subtitle timing</td>
+                    <td style="padding: 6px 4px; font-size: 13px;">Timing Control</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(130, 187, 181, 0.2);">
+                    <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">R</td>
+                    <td style="padding: 6px 4px; font-size: 13px;">Reset Timing</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(130, 187, 181, 0.2);">
+                    <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">V</td>
+                    <td style="padding: 6px 4px; font-size: 13px;">Text Color Control</td>
                 </tr>
                 <tr>
-                    <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">R</td>
-                    <td style="padding: 6px 4px; font-size: 13px;">Reset subtitle timing</td>
+                    <td style="padding: 6px 4px; font-size: 13px; width: 60px; text-align: right;">B</td>
+                    <td style="padding: 6px 4px; font-size: 13px;">Background Color Control</td>
                 </tr>
             </table>
             <style>
@@ -417,23 +424,5 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Parsed VTT subtitles:', subtitles);
         return subtitles;
-    }
-
-    // Use the updateStatus function that's defined in your HTML
-    function updateStatus(message, type) {
-        const statusEl = document.getElementById('statusMessage');
-        statusEl.textContent = message;
-        
-        // Remove existing status classes
-        statusEl.classList.remove('status-success', 'status-error', 'status-info');
-        
-        // Add appropriate status class
-        if (type === 'success') {
-            statusEl.classList.add('status-success');
-        } else if (type === 'error') {
-            statusEl.classList.add('status-error');
-        } else {
-            statusEl.classList.add('status-info');
-        }
     }
 });

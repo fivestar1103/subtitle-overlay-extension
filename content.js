@@ -11,6 +11,8 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
     let fontSize = 30; // Default font size
     let syncOffset = 0; // Time offset in seconds for sync adjustment
     let currentFullscreenElement = null; // Track fullscreen element
+    let subtitleColor = '#FFFFFF'; // Default subtitle color
+    let backgroundColor = 'rgba(0, 0, 0, 0.75)'; // Default background color
     
     // Add ping handler to respond to background script
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -57,8 +59,8 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
         // Create subtitle element
         subtitleElement = document.createElement('div');
         subtitleElement.id = 'subtitle-text';
-        subtitleElement.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
-        subtitleElement.style.color = 'white';
+        subtitleElement.style.backgroundColor = backgroundColor;
+        subtitleElement.style.color = subtitleColor;
         subtitleElement.style.padding = '8px 16px';
         subtitleElement.style.borderRadius = '4px';
         subtitleElement.style.fontSize = `${fontSize}px`;
@@ -174,6 +176,17 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
             resetSyncOffset();
             event.preventDefault();
         }
+
+        // Color customization shortcuts
+        if (event.key === 'v' || event.key === 'V') {
+            cycleSubtitleColor();
+            event.preventDefault();
+        }
+        
+        if (event.key === 'b' || event.key === 'B') {
+            cycleBackgroundColor();
+            event.preventDefault();
+        }
     }
     
     // Increase font size
@@ -218,6 +231,33 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
         showNotification('Subtitle timing reset');
     }
     
+    // Color cycling functions
+    const subtitleColors = ['#FFFFFF', '#FFFF00', '#00FF00', '#00FFFF', '#FF00FF', '#FF0000'];
+    const backgroundColors = [
+        'rgba(0, 0, 0, 0.75)',
+        'rgba(0, 0, 0, 0.5)',
+        'rgba(0, 0, 0, 0.25)',
+        'rgba(255, 0, 0, 0.75)',
+        'rgba(0, 255, 0, 0.75)',
+        'rgba(0, 0, 255, 0.75)'
+    ];
+
+    function cycleSubtitleColor() {
+        const currentIndex = subtitleColors.indexOf(subtitleColor);
+        const nextIndex = (currentIndex + 1) % subtitleColors.length;
+        subtitleColor = subtitleColors[nextIndex];
+        subtitleElement.style.color = subtitleColor;
+        showNotification(`Subtitle color: ${subtitleColor}`);
+    }
+
+    function cycleBackgroundColor() {
+        const currentIndex = backgroundColors.indexOf(backgroundColor);
+        const nextIndex = (currentIndex + 1) % backgroundColors.length;
+        backgroundColor = backgroundColors[nextIndex];
+        subtitleElement.style.backgroundColor = backgroundColor;
+        showNotification(`Background color: ${backgroundColor}`);
+    }
+    
     // Show temporary notification
     function showNotification(message) {
         // Create a temporary notification
@@ -234,7 +274,12 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
         notification.style.zIndex = '10000000';
         notification.style.fontFamily = 'Arial, sans-serif';
         
-        document.body.appendChild(notification);
+        // Add to the current fullscreen element if in fullscreen mode
+        if (currentFullscreenElement) {
+            currentFullscreenElement.appendChild(notification);
+        } else {
+            document.body.appendChild(notification);
+        }
         
         // Remove the notification after 1.5 seconds
         setTimeout(() => {
@@ -274,8 +319,8 @@ if (typeof subtitleOverlayLoaded === 'undefined') {
         const videos = document.querySelectorAll('video');
         
         for (const video of videos) {
-            // Check if video is actually playing
-            if (video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2) {
+            // Check if video is loaded and has a current time
+            if (video.currentTime > 0 && video.readyState > 2) {
                 return video.currentTime;
             }
         }
